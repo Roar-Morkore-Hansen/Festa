@@ -1,4 +1,4 @@
-
+// Turn loggin on or off with single variable.
 print_log = true;
 
 function log(string) {
@@ -9,7 +9,7 @@ function log(string) {
 
 // Deselecet prevoius and select new
 function selectVerse(id) {
-    log("[selectVerse] Selected id: " + id)
+    log("[selectVerse] Selected id: " + id);
 
     var verse_id_new = id;
     var verse_id_prev = document.querySelector(".selected").id;
@@ -22,16 +22,17 @@ function selectVerse(id) {
 //Select verse when clicked on.
 document.querySelectorAll(".verse").forEach(item => {
     item.addEventListener("click", event => {
-        log(event.target)
-        selectVerse(event.target.id) 
+        log(event.target);
+        selectVerse(event.target.id);
     })
-    log("[eventlistener] addEventListener to item id:" + item.id)
+    log("[eventlistener] addEventListener to item id:" + item.id);
 });
 
-
+// Play <audio> tag in the same <div> as selected <p> tag. 
 document.onkeydown = function checkKey(event) {
     if (event.key == "Enter") {
-        document.querySelector(".selected").parentElement.firstElementChild.play()
+        audio = document.querySelector(".selected").parentElement.firstElementChild;
+        audio.play();
     }
 };
 
