@@ -18,6 +18,26 @@ function selectVerse(id) {
 
 };
 
+function selectVerseKey(key) {
+    var selectedVerse = document.querySelector(".selected").id;
+    lastVerse = 2;
+    log("[selectVerseKey] selectedVerse: " + selectedVerse)
+    if (key == "Enter") {
+        verseDown = Number(selectedVerse) + 1;
+        if (verseDown <= lastVerse) {
+            selectVerse(verseDown)
+        }
+        log("[selectVerseKey] verseDown: " + verseDown)
+    }
+    else if (key == "Backspace") {
+        verseUp = Number(selectedVerse) - 1
+        if (verseUp > 0) {
+            selectVerse(verseUp)
+        }
+        log("[selectVerseKey] verseUp: " + verseUp)
+    }
+}
+
 
 //Select verse when clicked on.
 document.querySelectorAll(".verse").forEach(item => {
@@ -34,6 +54,9 @@ document.onkeydown = function checkKey(event) {
     if (event.key == " ") {
         audio = document.querySelector(".selected").parentElement.firstElementChild;
         audio.play();
+    }
+    else if (event.key == "Enter" || event.key == "Backspace") {
+        selectVerseKey(event.key)
     }
 };
 
