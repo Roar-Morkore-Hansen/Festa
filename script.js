@@ -43,7 +43,7 @@ document.onkeydown = function checkKey(event) {
         log(audio)
 
         // If selected vers is diffrent from vers that is currently playing then reset currentAudio. 
-        if (currentAudio != audio || currentAudio != null) {
+        if (currentAudio != audio && currentAudio != null) {
             currentAudio.load()
         }
 
@@ -54,8 +54,8 @@ document.onkeydown = function checkKey(event) {
         else {
             audio.play()
         }
-
         currentAudio = audio
+        log(currentAudio)
     }
 };
 
