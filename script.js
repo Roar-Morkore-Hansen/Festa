@@ -28,9 +28,10 @@ document.querySelectorAll(".verse").forEach(item => {
     log("[eventlistener] addEventListener to item id:" + item.id);
 });
 
-// Play <audio> tag in the same <div> as selected <p> tag. 
+
 document.onkeydown = function checkKey(event) {
-    if (event.key == "Enter") {
+    // Play <audio> tag in the same <div> as selected <p> tag when space is pressed. 
+    if (event.key == " ") {
         audio = document.querySelector(".selected").parentElement.firstElementChild;
         audio.play();
     }
