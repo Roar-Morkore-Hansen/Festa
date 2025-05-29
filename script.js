@@ -41,6 +41,19 @@ function selectVerseKey(key) {
     }
 }
 
+function toggleMark(selectedVerse, lineNum) {
+
+    var wordSpan = selectedVerse.querySelector("span")
+    const isMarked = wordSpan.querySelector("mark");
+  
+    if (isMarked) {
+      // Remove <mark> tag
+      wordSpan.innerHTML = isMarked.innerHTML;
+    } else {
+      // Add <mark> tag
+      wordSpan.innerHTML = `<mark>${wordSpan.innerHTML}</mark>`;
+    }
+  }
 
 //Select verse when clicked on.
 document.querySelectorAll(".verse").forEach(item => {
@@ -80,8 +93,10 @@ document.onkeydown = function checkKey(event) {
     else if (event.key == "Enter" || event.key == "Backspace") {
         selectVerseKey(event.key)
     }
+    else if (event.key == "ArrowDown") {
+        toggleMark(document.querySelector(".selected"), "1")
+    }
 };
 
+
 // DRIVER CODE
-
-
