@@ -33,7 +33,13 @@ document.onkeydown = function checkKey(event) {
     // Play <audio> tag in the same <div> as selected <p> tag when space is pressed. 
     if (event.key == " ") {
         audio = document.querySelector(".selected").parentElement.firstElementChild;
-        audio.play();
+        if (audio.currentTime > 0) {
+            audio.load()
+        }
+        else {
+            audio.play()
+        }
+        console.log(audio.currentTime);
     }
 };
 
