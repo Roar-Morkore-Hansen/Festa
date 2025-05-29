@@ -42,11 +42,12 @@ document.onkeydown = function checkKey(event) {
         log("[keyevent] audio: ")
         log(audio)
 
-
+        // If selected vers is diffrent from vers that is currently playing then reset currentAudio. 
         if (currentAudio != audio || currentAudio != null) {
             currentAudio.load()
         }
 
+        // If audio space is pressed while audio is playing then is should reset the audio.
         if (audio.currentTime > 0) {
             audio.load()
         }
