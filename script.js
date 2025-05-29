@@ -1,3 +1,6 @@
+
+var currentAudio;
+
 // Turn loggin on or off with single variable.
 print_log = true;
 
@@ -32,14 +35,26 @@ document.querySelectorAll(".verse").forEach(item => {
 document.onkeydown = function checkKey(event) {
     // Play <audio> tag in the same <div> as selected <p> tag when space is pressed. 
     if (event.key == " ") {
-        audio = document.querySelector(".selected").parentElement.firstElementChild;
+        var audio = document.querySelector(".selected").parentElement.firstElementChild;
+
+        log("[keyevent] Current audio: ")
+        log(currentAudio)
+        log("[keyevent] audio: ")
+        log(audio)
+
+
+        if (currentAudio != audio || currentAudio != null) {
+            currentAudio.load()
+        }
+
         if (audio.currentTime > 0) {
             audio.load()
         }
         else {
             audio.play()
         }
-        console.log(audio.currentTime);
+
+        currentAudio = audio
     }
 };
 
