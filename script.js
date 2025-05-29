@@ -41,19 +41,59 @@ function selectVerseKey(key) {
     }
 }
 
-function toggleMark(selectedVerse, lineNum) {
-
-    var wordSpan = selectedVerse.querySelector("span")
-    const isMarked = wordSpan.querySelector("mark");
+function toggleMark(lineId) {
+    const span = document.getElementById("line-" + lineId);
+    if (!span) return;
+  
+    const isMarked = span.querySelector("mark");
   
     if (isMarked) {
-      // Remove <mark> tag
-      wordSpan.innerHTML = isMarked.innerHTML;
+      span.innerHTML = isMarked.innerHTML;
     } else {
-      // Add <mark> tag
-      wordSpan.innerHTML = `<mark>${wordSpan.innerHTML}</mark>`;
+      span.innerHTML = `<mark>${span.innerHTML}</mark>`;
     }
   }
+
+  let lineCount = 0; // Start at first line
+  let selectedVerseId = 1;
+
+function toggleMarkArrow(key) {
+    if (key === "ArrowDown") {
+        lineCount++;
+        toggleMark(lineCount);
+    } else if (key === "ArrowUp") {
+        toggleMark(lineCount);
+        lineCount--;
+    }
+
+    // Count lines in the current verse
+    const currentVerse = document.getElementById(String(selectedVerseId));
+    const lines = currentVerse.querySelectorAll("span");
+    const maxLines = lines.length;
+    const linePerVerse = 4
+
+    if (lineCount < (currentVerse * (linePerVerse - 1) + 1)) {
+        selectedVerseId = selectVerse(selectedVerseId - 1);
+        const newVerse = document.getElementById(String(selectedVerseId));
+        lineCount = newVerse.querySelectorAll("span").length;
+    } else if (lineCount > (currentVerse * (linePerVerse + 1) )) {
+        selectedVerseId = selectVerse(selectedVerseId + 1);
+        lineCount = 1;
+    }
+
+    console.log(`[toggleMarkArrow] selectedVerseId: ${selectedVerseId}, lineCount: ${lineCount}`);
+}
+
+function toggleAllLines() {
+    lines = document.querySelectorAll(".line");
+
+    lines.forEach(line => {
+        const isMarked = line.querySelector("mark");
+        if (!isMarked) {
+          line.innerHTML = `<mark>${line.innerHTML}</mark>`;
+        }
+    })
+}
 
 //Select verse when clicked on.
 document.querySelectorAll(".verse").forEach(item => {
@@ -93,10 +133,13 @@ document.onkeydown = function checkKey(event) {
     else if (event.key == "Enter" || event.key == "Backspace") {
         selectVerseKey(event.key)
     }
-    else if (event.key == "ArrowDown") {
-        toggleMark(document.querySelector(".selected"), "1")
+    else if (event.key == "ArrowDown" || event.key == "ArrowUp") {
+        toggleMarkArrow(event.key)
     }
 };
 
 
 // DRIVER CODE
+
+
+toggleAllLines()
