@@ -41,6 +41,30 @@ function selectVerseKey(key) {
     }
 }
 
+function playPause() {
+    var audio = document.querySelector(".selected").parentElement.firstElementChild;
+
+    log("[keyevent SPACE] Current audio: ")
+    log(currentAudio)
+    log("[keyevent SPACE] audio: ")
+    log(audio)
+    log("[keyevent SPACE] currentTime: " + audio.currentTime)
+
+    // If selected vers is diffrent from vers that is currently playing then reset currentAudio. 
+    if (currentAudio != audio && currentAudio != null) {
+        currentAudio.load()
+    }
+
+    // If audio space is pressed while audio is playing then is should reset the audio.
+    if (audio.currentTime > 0 && audio.currentTime < audio.duration) {
+        audio.load()
+    }
+    else {
+        audio.play()
+    }
+    currentAudio = audio
+}
+
 
 //Select verse when clicked on.
 document.querySelectorAll(".verse").forEach(item => {
@@ -55,27 +79,7 @@ document.querySelectorAll(".verse").forEach(item => {
 document.onkeydown = function checkKey(event) {
     // Play <audio> tag in the same <div> as selected <p> tag when space is pressed. 
     if (event.key == " ") {
-        var audio = document.querySelector(".selected").parentElement.firstElementChild;
-
-        log("[keyevent SPACE] Current audio: ")
-        log(currentAudio)
-        log("[keyevent SPACE] audio: ")
-        log(audio)
-        log("[keyevent SPACE] currentTime: " + audio.currentTime)
-
-        // If selected vers is diffrent from vers that is currently playing then reset currentAudio. 
-        if (currentAudio != audio && currentAudio != null) {
-            currentAudio.load()
-        }
-
-        // If audio space is pressed while audio is playing then is should reset the audio.
-        if (audio.currentTime > 0 && audio.currentTime < audio.duration) {
-            audio.load()
-        }
-        else {
-            audio.play()
-        }
-        currentAudio = audio
+        playPause();
     }
     else if (event.key == "Enter" || event.key == "Backspace") {
         selectVerseKey(event.key)
