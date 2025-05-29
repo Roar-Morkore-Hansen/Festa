@@ -55,9 +55,10 @@ function toggleMark(lineId) {
   }
 
   let lineCount = 0; // Start at first line
-  let selectedVerseId = 1;
 
 function toggleMarkArrow(key) {
+    let selectedVerseId = document.querySelector(".selected").id;
+
     if (key === "ArrowDown") {
         lineCount++;
         toggleMark(lineCount);
@@ -67,18 +68,15 @@ function toggleMarkArrow(key) {
     }
 
     // Count lines in the current verse
-    const currentVerse = document.getElementById(String(selectedVerseId));
-    const lines = currentVerse.querySelectorAll("span");
-    const maxLines = lines.length;
     const linePerVerse = 4
 
-    if (lineCount < (currentVerse * (linePerVerse - 1) + 1)) {
-        selectedVerseId = selectVerse(selectedVerseId - 1);
-        const newVerse = document.getElementById(String(selectedVerseId));
-        lineCount = newVerse.querySelectorAll("span").length;
-    } else if (lineCount > (currentVerse * (linePerVerse + 1) )) {
-        selectedVerseId = selectVerse(selectedVerseId + 1);
-        lineCount = 1;
+
+    if (lineCount < (Number(selectedVerseId) * linePerVerse  + 1)) {
+        console.log("prev verse")
+        selectVerse(selectedVerseId - 1);
+    } else if (lineCount > ((Number(selectedVerseId) + 1) * (linePerVerse))) {
+        console.log("next verse")
+        selectVerse(Number(selectedVerseId) + 1);
     }
 
     console.log(`[toggleMarkArrow] selectedVerseId: ${selectedVerseId}, lineCount: ${lineCount}`);
