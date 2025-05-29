@@ -37,10 +37,11 @@ document.onkeydown = function checkKey(event) {
     if (event.key == " ") {
         var audio = document.querySelector(".selected").parentElement.firstElementChild;
 
-        log("[keyevent] Current audio: ")
+        log("[keyevent SPACE] Current audio: ")
         log(currentAudio)
-        log("[keyevent] audio: ")
+        log("[keyevent SPACE] audio: ")
         log(audio)
+        log("[keyevent SPACE] currentTime: " + audio.currentTime)
 
         // If selected vers is diffrent from vers that is currently playing then reset currentAudio. 
         if (currentAudio != audio && currentAudio != null) {
@@ -48,14 +49,13 @@ document.onkeydown = function checkKey(event) {
         }
 
         // If audio space is pressed while audio is playing then is should reset the audio.
-        if (audio.currentTime > 0) {
+        if (audio.currentTime > 0 && audio.currentTime < audio.duration) {
             audio.load()
         }
         else {
             audio.play()
         }
         currentAudio = audio
-        log(currentAudio)
     }
 };
 
