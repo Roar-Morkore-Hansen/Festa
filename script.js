@@ -14,10 +14,14 @@ function log(string) {
 function selectVerse(id) {
     log("[selectVerse] Selected id: " + id);
 
-    var verse_id_new = id;
-    var verse_id_prev = document.querySelector(".selected").id;
-    document.getElementById(verse_id_prev).classList.toggle("selected");
-    document.getElementById(verse_id_new).classList.toggle("selected");
+    maxVersesNum = document.querySelectorAll(".verse").length
+
+    if (id >= 0 && id <= maxVersesNum) {   
+        var verse_id_new = id;
+        var verse_id_prev = document.querySelector(".selected").id;
+        document.getElementById(verse_id_prev).classList.toggle("selected");
+        document.getElementById(verse_id_new).classList.toggle("selected");
+    }
 
 };
 
@@ -57,12 +61,13 @@ function toggleMark(lineId) {
   let lineCount = 0; // Start at first line
 
 function toggleMarkArrow(key) {
-    let selectedVerseId = document.querySelector(".selected").id;
+    selectedVerseId = document.querySelector(".selected").id;
+    maxLineNum = document.querySelectorAll(".line").length
 
-    if (key === "ArrowDown") {
+    if (key === "ArrowDown" && lineCount <= (maxLineNum - 1)) {
         lineCount++;
         toggleMark(lineCount);
-    } else if (key === "ArrowUp") {
+    } else if (key === "ArrowUp" && lineCount != 0) {
         toggleMark(lineCount);
         lineCount--;
     }
