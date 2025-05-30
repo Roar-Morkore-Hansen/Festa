@@ -1,11 +1,18 @@
 
-var currentAudio;
+// Count lines in verse
+const linePerVerse = document.querySelector(".verse").querySelectorAll(".line").length;
 
-    // Count lines in the current verse
-const linePerVerse = 4
+// Count num of verses
+const lastVerseId = document.querySelectorAll(".verse").length - 1;
+
+// Count of marked line
+let lineCount = 0; 
+
+// Number of lines
+var maxLineNum = document.querySelectorAll(".line").length
 
 // Turn loggin on or off with single variable.
-print_log = true;
+var print_log = true;
 
 function log(string) {
     if (print_log == true) {
@@ -13,39 +20,46 @@ function log(string) {
     }
 }
 
+function getSelectedVerse() {
+    return document.querySelector(".selected");
+}
+
+function getSelectedVerseId() {
+    return getSelectedVerse().id;
+}
+
 // Deselecet prevoius and select new
-function selectVerse(id) {
-    log("[selectVerse] Selected id: " + id);
+function selectVerse(newId) {
+    log("[selectVerse] Selected id: " + newId);
 
-    maxVersesNum = document.querySelectorAll(".verse").length
-
-    if (id >= 0 && id <= maxVersesNum) {   
-        var verse_id_new = id;
-        var verse_id_prev = document.querySelector(".selected").id;
-        document.getElementById(verse_id_prev).classList.toggle("selected");
-        document.getElementById(verse_id_new).classList.toggle("selected");
+    if (newId >= 0 && newId <= lastVerseId) {   
+        prevId = getSelectedVerseId();
+        document.getElementById(prevId).classList.toggle("selected");
+        document.getElementById(newId).classList.toggle("selected");
     }
-
 };
 
 function selectVerseKey(key) {
-    var selectedVerse = document.querySelector(".selected").id;
-    lastVerse = 2;
-    log("[selectVerseKey] selectedVerse: " + selectedVerse)
+    var selectedVerseId = getSelectedVerseId();
+    log("[selectVerseKey] selectedVerse: " + selectedVerseId)
     if (key == "Enter") {
-        verse = Number(selectedVerse) + 1;
+        verse = Number(selectedVerseId) + 1;
         selectVerse(verse)
-        log("[selectVerseKey] verseDown: " + verse)
+        log("[selectVerseKey enter] verseDown: " + verse)
     }
     else if (key == "Backspace") {
-        verse = Number(selectedVerse) - 1
+        verse = Number(selectedVerseId) - 1
         selectVerse(verse)
-        log("[selectVerseKey] verseUp: " + verse)
+        log("[selectVerseKey backspace] verseUp: " + verse)
     }
 }
 
-function toggleMark(lineId) {
+function toggleMarkId(lineId) {
     const span = document.getElementById("line-" + lineId);
+    toggleMark(span);
+}
+
+function toggleMark(span) {
     if (!span) return;
   
     const isMarked = span.querySelector("mark");
@@ -55,32 +69,28 @@ function toggleMark(lineId) {
     } else {
       span.innerHTML = `<mark>${span.innerHTML}</mark>`;
     }
-  }
-
-  let lineCount = 0; // Start at first line
+}
 
 function toggleMarkArrow(key) {
-    selectedVerseId = document.querySelector(".selected").id;
+    var selectedVerseId = getSelectedVerseId();
     maxLineNum = document.querySelectorAll(".line").length
 
     if (key === "ArrowDown" && lineCount <= (maxLineNum - 1)) {
         lineCount++;
-        toggleMark(lineCount);
+        toggleMarkId(lineCount);
     } else if (key === "ArrowUp" && lineCount != 0) {
-        toggleMark(lineCount);
+        toggleMarkId(lineCount);
         lineCount--;
     }
 
 
-    if (lineCount < (Number(selectedVerseId) * linePerVerse)) {
-        console.log("prev verse")
-        selectVerse(selectedVerseId - 1);
-    } else if (lineCount > ((Number(selectedVerseId) + 1) * (linePerVerse))) {
-        console.log("next verse")
+    if (lineCount < (selectedVerseId * linePerVerse)) {
+        selectVerse(Number(selectedVerseId) - 1);
+    } else if (lineCount > ((selectedVerseId + 1) * (linePerVerse))) {
         selectVerse(Number(selectedVerseId) + 1);
     }
 
-    console.log(`[toggleMarkArrow] selectedVerseId: ${selectedVerseId}, lineCount: ${lineCount}`);
+    log(`[toggleMarkArrow] selectedVerseId: ${selectedVerseId}, lineCount: ${lineCount}`);
 }
 
 bool = false
@@ -95,15 +105,15 @@ function toggle() {
 }
 
 function toggleMarkAll() {
-    tog = toggle();
+    var toggleBoolean = toggle();
 
-    if (tog == true) {
-        selectedVerseId = document.querySelector(".selected").id;
-        lineCount = selectedVerseId * linePerVerse
+    if (toggleBoolean == true) {
+        var selectedVerseId = getSelectedVerseId();
+        lineCount = Number(selectedVerseId) * linePerVerse;
     }
 
-    console.log(tog)
-    markAllLines(tog)
+    log("[toggleMarkAll] bool: " + toggleBoolean)
+    markAllLines(toggleBoolean)
 }
 
 function markAllLines(toggle) {
@@ -112,12 +122,38 @@ function markAllLines(toggle) {
     lines.forEach(line => {
         const isMarked = line.querySelector("mark");
         if (!isMarked && toggle == true) {
-          line.innerHTML = `<mark>${line.innerHTML}</mark>`;
+            toggleMark(line)
         }
         else if (isMarked && toggle == false) {
-            line.innerHTML = isMarked.innerHTML;
+            toggleMark(line)
         }
     })
+}
+
+// Pauses and plays audio of the selected verse
+var currentAudio;
+function pausePlay() {
+    var audio = document.querySelector(".selected").parentElement.firstElementChild;
+
+    log("[keyevent SPACE] Current audio: ")
+    log(currentAudio)
+    log("[keyevent SPACE] audio: ")
+    log(audio)
+    log("[keyevent SPACE] currentTime: " + audio.currentTime)
+
+    // If selected vers is diffrent from vers that is currently playing then reset currentAudio. 
+    if (currentAudio != audio && currentAudio != null) {
+        currentAudio.load()
+    }
+
+    // If audio space is pressed while audio is playing then is should reset the audio.
+    if (audio.currentTime > 0 && audio.currentTime < audio.duration) {
+        audio.load()
+    }
+    else {
+        audio.play()
+    }
+    currentAudio = audio
 }
 
 //Select verse when clicked on.
@@ -133,27 +169,7 @@ document.querySelectorAll(".verse").forEach(item => {
 document.onkeydown = function checkKey(event) {
     // Play <audio> tag in the same <div> as selected <p> tag when space is pressed. 
     if (event.key == " ") {
-        var audio = document.querySelector(".selected").parentElement.firstElementChild;
-
-        log("[keyevent SPACE] Current audio: ")
-        log(currentAudio)
-        log("[keyevent SPACE] audio: ")
-        log(audio)
-        log("[keyevent SPACE] currentTime: " + audio.currentTime)
-
-        // If selected vers is diffrent from vers that is currently playing then reset currentAudio. 
-        if (currentAudio != audio && currentAudio != null) {
-            currentAudio.load()
-        }
-
-        // If audio space is pressed while audio is playing then is should reset the audio.
-        if (audio.currentTime > 0 && audio.currentTime < audio.duration) {
-            audio.load()
-        }
-        else {
-            audio.play()
-        }
-        currentAudio = audio
+        pausePlay();
     }
     else if (event.key == "Enter" || event.key == "Backspace") {
         selectVerseKey(event.key)
