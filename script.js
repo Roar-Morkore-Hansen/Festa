@@ -76,7 +76,7 @@ function toggleMarkArrow(key) {
     const linePerVerse = 4
 
 
-    if (lineCount < (Number(selectedVerseId) * linePerVerse  + 1)) {
+    if (lineCount < (Number(selectedVerseId) * linePerVerse)) {
         console.log("prev verse")
         selectVerse(selectedVerseId - 1);
     } else if (lineCount > ((Number(selectedVerseId) + 1) * (linePerVerse))) {
