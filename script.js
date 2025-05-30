@@ -1,6 +1,9 @@
 
 var currentAudio;
 
+    // Count lines in the current verse
+const linePerVerse = 4
+
 // Turn loggin on or off with single variable.
 print_log = true;
 
@@ -30,18 +33,14 @@ function selectVerseKey(key) {
     lastVerse = 2;
     log("[selectVerseKey] selectedVerse: " + selectedVerse)
     if (key == "Enter") {
-        verseDown = Number(selectedVerse) + 1;
-        if (verseDown <= lastVerse) {
-            selectVerse(verseDown)
-        }
-        log("[selectVerseKey] verseDown: " + verseDown)
+        verse = Number(selectedVerse) + 1;
+        selectVerse(verse)
+        log("[selectVerseKey] verseDown: " + verse)
     }
     else if (key == "Backspace") {
-        verseUp = Number(selectedVerse) - 1
-        if (verseUp > 0) {
-            selectVerse(verseUp)
-        }
-        log("[selectVerseKey] verseUp: " + verseUp)
+        verse = Number(selectedVerse) - 1
+        selectVerse(verse)
+        log("[selectVerseKey] verseUp: " + verse)
     }
 }
 
@@ -72,9 +71,6 @@ function toggleMarkArrow(key) {
         lineCount--;
     }
 
-    // Count lines in the current verse
-    const linePerVerse = 4
-
 
     if (lineCount < (Number(selectedVerseId) * linePerVerse)) {
         console.log("prev verse")
@@ -87,13 +83,39 @@ function toggleMarkArrow(key) {
     console.log(`[toggleMarkArrow] selectedVerseId: ${selectedVerseId}, lineCount: ${lineCount}`);
 }
 
-function toggleAllLines() {
+bool = false
+function toggle() {
+    if (bool == true) {
+        bool = false
+    }
+    else {
+        bool = true;
+    }
+    return bool;
+}
+
+function toggleMarkAll() {
+    tog = toggle();
+
+    if (tog == true) {
+        selectedVerseId = document.querySelector(".selected").id;
+        lineCount = selectedVerseId * linePerVerse
+    }
+
+    console.log(tog)
+    markAllLines(tog)
+}
+
+function markAllLines(toggle) {
     lines = document.querySelectorAll(".line");
 
     lines.forEach(line => {
         const isMarked = line.querySelector("mark");
-        if (!isMarked) {
+        if (!isMarked && toggle == true) {
           line.innerHTML = `<mark>${line.innerHTML}</mark>`;
+        }
+        else if (isMarked && toggle == false) {
+            line.innerHTML = isMarked.innerHTML;
         }
     })
 }
@@ -144,5 +166,3 @@ document.onkeydown = function checkKey(event) {
 
 // DRIVER CODE
 
-
-toggleAllLines()
